@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GridLayout>
-    <Background x="0" y="0" size="1" res="./res/assembly/haha.xml"/>
-    <Group type="Goomba" x="0" y="0" tx="10" ty="0" size="1"/>
-
-</GridLayout>
