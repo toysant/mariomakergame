@@ -29,6 +29,7 @@ public class Refresher extends Thread {
             wtime=stime;
         }
         fpsnow=1000L/wtime;
+//        System.out.println(fpsnow);
     }
     static void setFps(int f){
         if(f<=1000){

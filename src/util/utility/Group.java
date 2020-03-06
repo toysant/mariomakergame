@@ -21,4 +21,8 @@ public class Group extends Elements{
     public void add(Elements elements){
         elementsList.add(elements);
     }
+    public void remove(Elements e){
+        elementsList.remove(e);
+    }
+
 }

@@ -6,7 +6,50 @@ import java.util.List;
 
 public class View {
     private List<Elements> universalelements=null;
+    private int mul;
     private String filename,layout;
+    private boolean xoffsetable=false,yoffsetable=false;
+    private int maxx=0,maxy=0;
+    public int getMul() {
+        return mul;
+    }
+
+    public void setMul(int mul) {
+        this.mul = mul;
+    }
+
+    public boolean isXoffsetable() {
+        return xoffsetable;
+    }
+
+    public void setXoffsetable(boolean xoffsetable) {
+        this.xoffsetable = xoffsetable;
+    }
+
+    public boolean isYoffsetable() {
+        return yoffsetable;
+    }
+
+    public void setYoffsetable(boolean yoffsetable) {
+        this.yoffsetable = yoffsetable;
+    }
+
+    public int getMaxx() {
+        return maxx;
+    }
+
+    public void setMaxx(int maxx) {
+        this.maxx = maxx;
+    }
+
+    public int getMaxy() {
+        return maxy;
+    }
+
+    public void setMaxy(int maxy) {
+        this.maxy = maxy;
+    }
+
     public View(String filename){
         universalelements=new ArrayList<Elements>();
         this.filename=filename;
@@ -50,4 +93,5 @@ public class View {
     public void setFilename(String filename) {
         this.filename = filename;
     }
+
 }

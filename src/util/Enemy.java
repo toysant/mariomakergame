@@ -1,84 +1,99 @@
 package util;
 
 
+
 public abstract class Enemy extends Elements {
-    private Thread thread=null;
-    private boolean togo=false;
-    private boolean ison=false;
-    private int gravity=1;
-    private int a=0;
-    private int s=0;
-    public int getA() {
-        return a;
+    abstract public void go();
+
+    @Override
+    public void istouchedright(int x,int y) {
+            setY(y);
+            setX(x);
+            setS(-Math.abs(getS()));
     }
 
-    public void setGravity(int gravity) {
-        this.gravity = gravity;
+    @Override
+    public void chained() {
+        setDestroy(true);
     }
 
-    public void setIson(boolean ison) {
-        this.ison = ison;
+    @Override
+    public void istouchedright(Elements e) {
+        if (e instanceof ControllableElements){
+            e.destroy();
+        }
     }
-
-    public boolean isIson() {
-        return ison;
-    }
-
-    public int getGravity() {
-        return gravity;
-    }
-
-    public void gravity(){
-        if (!isIson()) {
-            setY(getY() + getA());
-            if (getA() < 5) {
-                setA(getA() + getGravity());
+    @Override
+    public void cling(int line,Elements e) {
+        if (getDropvre()==0&&line==1) {
+            if (e instanceof Block) {
+                ((Block)e).add(this);
             }
         }
-        else {
-            setA(0);
+    }
+
+    @Override
+    public void istouchedleft(int x,int y){
+            setY(y);
+            setX(x);
+            setS(Math.abs(getS()));
+    }
+
+    @Override
+    public void istouchedleft(Elements e) {
+        if (e instanceof ControllableElements){
+            e.destroy();
         }
     }
-    public boolean isTogo() {
-        return togo;
+
+    @Override
+    public void ispushedup(int x,int y){
+                setDropv(0);
+                setY(y);
+                setX(x);
     }
 
-    public void setTogo(boolean togo) {
-        this.togo = togo;
-    }
-
-    public void setA(int a) {
-        this.a = a;
-    }
-    public  void start(){
-        setTogo(true);
-        thread=new Thread(()->{
-            while (togo){
-                method();
-                sleep();
-            }
-        });
-        thread.start();
-    }
-    private void sleep(){
-        try {
-            Thread.sleep(25);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    @Override
+    public void ispushedup(Elements e) {
+        if (e instanceof ControllableElements){
+            e.destroy();
         }
     }
-    public int getS() {
-        return s;
+
+    @Override
+    public void isstepped(int x,int y) {
+                setDropv(0);
+                setY(y);
+                setX(x);
     }
 
-    public void setS(int s) {
-        this.s = s;
+    @Override
+    public void isstepped(Elements e) {
+        if (e instanceof ControllableElements){
+            e.setDropv(-20);
+            setDestroy(true);
+        }
     }
 
-    public abstract void method();
-    public abstract void istouched();
-    public void destroy(){
-        togo=false;
+    @Override
+    public void leftre(int sub) {
+        setSre(Math.abs(sub));
+
     }
 
+    @Override
+    public void rightre(int sub) {
+        setSre(-Math.abs(sub));
+    }
+
+    @Override
+    public void pushedupre(int sub) {
+        setDropvre(0);
+    }
+
+    @Override
+    public void steppedre(int sub) {
+        setDropv(0);
+
+    }
 }

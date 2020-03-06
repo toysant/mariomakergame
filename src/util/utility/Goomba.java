@@ -1,13 +1,11 @@
 package util.utility;
 
 import util.Enemy;
-import util.Sprite;
 
 import java.util.Random;
 
-public class Goomba extends Enemy implements Sprite {
+public class Goomba extends Enemy {
     private int i=0,index=0;
-    private final int gravity=1;
     public Goomba(){
         setResource("goombasprite.png");
         setResourcetype("Sprite");
@@ -18,32 +16,15 @@ public class Goomba extends Enemy implements Sprite {
 
     @Override
     public void method(){
-                setX(super.getX()+getS());
-                gravity();
-                nextStep();
+
     }
     @Override
-    public void istouched() {
+    public void go(){
+            setX(getX() + getSre());
     }
 
-    @Override
-    public void nextStep() {
-        index++;
-        if(index%8==0) {
-            if(i<1){
-            i++;
-            }
-            else {
-                i=0;
-            }
-        }
-    }
 
-    @Override
-    public int getStep() {
-        return i;
-    }
-    public void haha(){
-        System.out.println("haha");
-    }
+
+
+
 }

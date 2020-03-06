@@ -4,17 +4,14 @@ import util.Button;
 import util.Derivative;
 import util.InfoPack;
 
-public class ExitButton extends Button {
-    public ExitButton(){
-        super.setResource("exit");
+public class GameOver extends Button {
+    public GameOver(){
+        super.setResource("gameover");
         super.setResourcetype("String");
-        setLength(100);
     }
-
 
     @Override
     public Derivative click(InfoPack pack) {
-        System.exit(0);
         return null;
     }
 

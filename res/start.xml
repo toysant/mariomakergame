@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Default>
+    <StartButton  x="500" y="100" size="100" />
+    <ExitButton x="500" y="200" size="50"/>
+    <EditModeButton x="500" y="400" size="50"/>
+</Default>

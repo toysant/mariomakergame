@@ -2,5 +2,6 @@
 
 <configs>
     <title>haha</title>
-    <numinfo fps="60" resx="1800" resy="1600"/>
+    <numinfo fps="160" resx="1800" resy="1000" size="300"/>
+    <Mode name="StartMode"/>
 </configs>

@@ -5,14 +5,14 @@ import util.Derivative;
 import util.Elements;
 import util.InfoPack;
 
-public class StartButton extends Button {
-    public StartButton(){
-        super.setResource("loginbt.jpg");
-        super.setResourcetype("Image");
-        setSmul(0.5f);
+public class EditModeButton extends Button {
+    public EditModeButton(){
+        super.setResource("editmode");
+        super.setResourcetype("String");
+        setLength(150);
     }
     @Override
-    public Derivative click(InfoPack pack){
+    public Derivative click(InfoPack pack) {
         return null;
     }
 
@@ -23,6 +23,6 @@ public class StartButton extends Button {
 
     @Override
     public Elements click() {
-        return new FileChosenMenu(300,100);
+        return new EditModeSettingsMenu(300,100);
     }
 }

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Default>
-    <StartButton  x="500" y="100" size="100" />
-    <ExitButton x="500" y="200" size="100"/>
-</Default>
+<GridLayout bz="100" xoffsetable="true" maxx="10000">
+    <Grassblock x="850" y="630" size="25"/>
+    <!--<Grassblock x="3" y="6" size="1"/>-->
+    <!--<Grassblock x="5" y="6" size="1"/>-->
+    <Goomba x="7" y="6" size="1"/>
+    <Mushroom x="4" y="6" size="1"/>
+    <!--<Group type="Grassblock" x="0" y="5" tx="10" ty="5" size="1" />-->
+    <Group type="Grassblock" x="0" y="7" tx="100" ty="7" size="1"/>
+    <Mario x="5" y="6" size="1"/>
+</GridLayout>

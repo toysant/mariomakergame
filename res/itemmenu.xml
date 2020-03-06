@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GridLayout bz="100">
+<Goomba x="0" y="0" size="1"/>
+<Mario x="2" y="0" size="1"/>
+    <Grassblock x="4" y="0" size="1"/>
+    <Mushroom x="6" y="0" size="1"/>
+</GridLayout>
