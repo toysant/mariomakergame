@@ -3,6 +3,8 @@ package util;
 
 public  class Button extends Elements{
     private int length;
+    private Elements back=null;
+    private Elements focusedEffect=null;
     public Derivative click(InfoPack pack){
         return null;
     }
@@ -24,5 +26,24 @@ public  class Button extends Elements{
 
     public void setLength(int length) {
         this.length = length;
+    }
+
+    public Elements getBack() {
+        return back;
+    }
+
+    public void setBack(Elements back) {
+        this.back = back;
+    }
+
+    public Elements getFocusedEffect() {
+        return focusedEffect;
+    }
+
+    public void setFocusedEffect(Elements focusedEffect) {
+        this.focusedEffect = focusedEffect;
+    }
+    public void focusing(){
+
     }
 }

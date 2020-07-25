@@ -2,7 +2,9 @@ package act;
 
 import util.*;
 import res.ResourceManager;
+import util.Button;
 import util.Menu;
+import util.utility.BackPic;
 
 
 import javax.swing.*;
@@ -31,13 +33,47 @@ public class GraphicsPanel extends JPanel {
                         routeswitch(((Menu) elements).getBack(), g, elements.getX(), elements.getY(), false, null);
                     }
                     ((Menu)elements).getContain().forEach(elements1 -> {
+                        if (elements1 instanceof Button){
+                            drawFocusEffect(g,elements1,(Menu) elements);
+                        }
                         routeswitch(elements1,g,elements.getX(),elements.getY(),true,(Menu) elements);
+
                     });
+                }
+                else if (elements instanceof Button){
+                    drawFocusEffect(g,elements,null);
+                    if (((Button)elements).getBack()!=null){
+                        routeswitch(((Button) elements).getBack(), g, elements.getX(), elements.getY(), false, null);
+                        routeswitch(elements,g);
+                    }
+                    else {
+                        routeswitch(elements,g);
+                    }
+
                 }
                 else {
                     routeswitch(elements,g);
                 }
+
             }
+        }
+    }
+    private  void drawFocusEffect(Graphics g,Elements elements,Menu e){
+
+        if (elements.isFocusing()){
+            ((Button) elements).focusing();
+
+            if (((Button) elements).getFocusedEffect()!=null) {
+                if (e==null) {
+                    routeswitch(((Button) elements).getFocusedEffect(), g, elements.getX(), elements.getY(), false, null);
+                }
+                else {
+                    routeswitch(((Button) elements).getFocusedEffect(), g, e.getX()+elements.getX(), e.getY()+elements.getY(), true, e);
+                }
+
+                ;
+            }
+
         }
     }
     private void routeswitch(Elements elements,Graphics g,int x,int y,boolean offset,Menu e){
@@ -53,7 +89,12 @@ public class GraphicsPanel extends JPanel {
         switch (elements.getResourcetype()) {
             case "String":
 //                g.drawLine(elements.getX(),elements.getY(),elements.getX()+elements.getSize(),elements.getY()+elements.sizetotall());
-                g.setColor(new Color((0x000000)));
+                if (elements.getColor()!=null) {
+                    g.setColor(elements.getColor());
+                }
+                else {
+                    g.setColor(new Color(0x000000));
+                }
                 g.setFont(new Font("Arial", Font.PLAIN, (elements.getPaintsize()) * 2 / 3));
                 g.drawString(elements.getResource(), elements.getPaintx() + x-xof, elements.getPainty() + y -yof+ (elements.getPainttall()) * 3 / 4);
                 break;
@@ -66,13 +107,19 @@ public class GraphicsPanel extends JPanel {
                         elements.getPaintx() +x-xof, elements.getPainty() +y-yof,
                         elements.getPaintx() +x-xof + elements.getPaintsize(), elements.getPainty() +y + elements.getPainttall()-yof,
                         elements.getImgx(), elements.getImgy(), elements.getImgxto(), elements.getImgyto(), this);
+
         }
     }
     private void routeswitch(Elements elements,Graphics g){
         switch (elements.getResourcetype()) {
             case "String":
 //                g.drawLine(elements.getX(),elements.getY(),elements.getX()+elements.getSize(),elements.getY()+elements.sizetotall());
-                g.setColor(new Color((0x000000)));
+                if (elements.getColor()!=null) {
+                    g.setColor(elements.getColor());
+                }
+                else {
+                    g.setColor(new Color(0x000000));
+                }
                 g.setFont(new Font("Arial", Font.PLAIN, (elements.getPaintsize()) * 2 / 3));
                 g.drawString(elements.getResource(), elements.getPaintx() - updater.getXoffset(), elements.getPainty() - updater.getYoffset() + (elements.getPainttall()) * 3 / 4);
                 break;
@@ -81,7 +128,7 @@ public class GraphicsPanel extends JPanel {
                         elements.getPaintx() - updater.getXoffset(), elements.getPainty() - updater.getYoffset(), elements.getPaintsize(), elements.getPainttall(), this);
                 break;
             case "Sprite":
-                g.drawLine(elements.getPaintx() - updater.getXoffset(), elements.getPainty() - updater.getYoffset(), elements.getPaintx() - updater.getXoffset() + elements.getS() * 20, elements.getPainty() - updater.getYoffset() + elements.getDropv() * 20);
+                //g.drawLine(elements.getPaintx() - updater.getXoffset(), elements.getPainty() - updater.getYoffset(), elements.getPaintx() - updater.getXoffset() + elements.getS() * 20, elements.getPainty() - updater.getYoffset() + elements.getDropv() * 20);
                 g.drawImage(resourceManager.getImagebyString(elements.getResource()),
                         elements.getPaintx() - updater.getXoffset(), elements.getPainty() - updater.getYoffset(),
                         elements.getPaintx() - updater.getXoffset() + elements.getPaintsize(), elements.getPainty() - updater.getYoffset() + elements.getPainttall(),
@@ -103,21 +150,27 @@ public class GraphicsPanel extends JPanel {
             threadnum.decrementAndGet();
         }
     }
+    private void getBuffer(){
+        if (updater.you!=null) {
+            bufferedview.getUniversalelements().add(updater.you);
+        }
+        bufferedview.getUniversalelements().addAll(updater.derivativeList);
+        bufferedview.getUniversalelements().addAll(updater.animeList);
+        bufferedview.getUniversalelements().addAll(updater.enemyList);
+        bufferedview.getUniversalelements().addAll(updater.buttonList);
+        bufferedview.getUniversalelements().addAll(updater.blockList);
+        bufferedview.getUniversalelements().addAll(updater.menuList);
+    }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         this.gh=g;
         temp=System.currentTimeMillis();
-        if (updater.you!=null) {
-            bufferedview.getUniversalelements().add(updater.you);
-        }
-        bufferedview.getUniversalelements().addAll(updater.enemyList);
-        bufferedview.getUniversalelements().addAll(updater.buttonList);
-        bufferedview.getUniversalelements().addAll(updater.blockList);
-        bufferedview.getUniversalelements().addAll(updater.derivativeList);
-        bufferedview.getUniversalelements().addAll(updater.animeList);
-        bufferedview.getUniversalelements().addAll(updater.menuList);
+        getBuffer();
         this.setBackground(new Color(0xFFFFFF));
+        if (updater.backPic!=null) {
+            g.drawImage(resourceManager.getImagebyString(updater.backPic.getResource()), 0, 0, updater.getConf().getX(), updater.getConf().getY(), this);
+        }
         int size=bufferedview.getUniversalelements().size();
         if (size>1000){
 //            Spliterator spliterator=bufferedview.getUniversalelements().spliterator();

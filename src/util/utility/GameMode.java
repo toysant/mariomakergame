@@ -91,7 +91,7 @@ public class GameMode extends Mode {
                 }
             }
             if (!ct) {
-                Menu menu = new GameModePauseMenu(700, 400);
+                Menu menu = new GameModePauseMenu(600, 300);
                 getAddlist().add(menu);
                 menuList.add(menu);
             }
@@ -114,6 +114,22 @@ public class GameMode extends Mode {
             case 'S':
             case 's':down(status);break;
             case 27: esc(status);break;
+            default:other(code,status);
         }
+    }
+    public void other(int code,boolean status){
+        if (isControl()){
+            if (getFocus()!=null){
+                getAddlist().add(((ControllableElements)getFocus()).definedKey(code,status));
+            }
+        }
+    }
+
+    @Override
+    public int scenelogic() {
+        if (getFocus()!=null) {
+            return ((ControllableElements) getFocus()).gameover();
+        }
+        return super.scenelogic();
     }
 }

@@ -3,5 +3,6 @@
 <Goomba x="0" y="0" size="1"/>
 <Mario x="2" y="0" size="1"/>
     <Grassblock x="4" y="0" size="1"/>
-    <Mushroom x="6" y="0" size="1"/>
+    <Brick x="6" y="0" size="1"/>
+    <Mushroom x="8" y="0" size="1"/>
 </GridLayout>

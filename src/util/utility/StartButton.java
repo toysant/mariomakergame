@@ -7,9 +7,9 @@ import util.InfoPack;
 
 public class StartButton extends Button {
     public StartButton(){
-        super.setResource("loginbt.jpg");
-        super.setResourcetype("Image");
-        setSmul(0.5f);
+        super.setResource("start");
+        super.setResourcetype("String");
+        setLength(150);
     }
     @Override
     public Derivative click(InfoPack pack){

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Default>
-    <StartButton  x="500" y="100" size="100" />
-    <ExitButton x="500" y="200" size="50"/>
-    <EditModeButton x="500" y="400" size="50"/>
+    <BackPic x="0" y="0" size="0" name="background2.gif"/>
+    <Title x="500" y="100" size="150"/>
+    <StartButton  x="700" y="300" size="100" />
+    <ExitButton x="700" y="400" size="100"/>
+    <EditModeButton x="700" y="500" size="100"/>
+    <Background x="0" y="0" size="0" res="./res/assembly/haha.xml"/>
+
 </Default>

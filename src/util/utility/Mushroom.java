@@ -9,13 +9,15 @@ import java.util.Random;
 public class Mushroom extends Derivative {
     private int index=0,i=0;
     public Mushroom(){
-        setResource("goombasprite.png");
-        setResourcetype("Sprite");
-        setImgx(210);
-        setImgy(210);
-        setS((int)(2*Math.pow(-1,new Random().nextInt(1))));
-        setLogical(false);
+        setResource("mushroom.png");
+        setResourcetype("Image");
+//        setResourcetype("Sprite");
+        //setImgx(210);
+        //setImgy(210);
+        setS((int)(8*Math.pow(-1,new Random().nextInt(1))));
+        //setLogical(false);
         setAnimename("MushroomAnime");
+        setHighspeed(true);
     }
     @Override
     public Derivative deal(Elements e) {
@@ -32,7 +34,7 @@ public class Mushroom extends Derivative {
     }
     @Override
     public void go(){
-        setX(getX() + getSre());
+
     }
 
 

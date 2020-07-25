@@ -12,16 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SquareMap {
-    private HashMap<String,Square> map=new HashMap<String,Square>();
-    private int maxx=0,maxy=0,visix=0,visiy=0;
-    private int nowx=0,nowy=0;
-    private int numx=0,numy=0;
-    private int loadrange=2;
-    private int size=300;
-    private Updater updater=null;
-    List<List<Elements>> ll=new ArrayList<List<Elements>>();
-    List<Elements> le = new ArrayList<Elements>();
-    private int[][] un=new int[2][2];
+        private HashMap<String,Square> map=new HashMap<String,Square>();
+        private int maxx=0,maxy=0,visix=0,visiy=0;
+        private int nowx=0,nowy=0;
+        private int numx=0,numy=0;
+        private int loadrange=2;
+        private int size=300;
+        private Updater updater=null;
+        List<List<Elements>> ll=new ArrayList<List<Elements>>();
+        List<Elements> le = new ArrayList<Elements>();
+        private int[][] un=new int[2][2];
     public SquareMap(){
 
     }
@@ -46,7 +46,7 @@ public class SquareMap {
         numy=conf.getY()/size;
         loadview(v,false);
     }
-    private void loadbackgroud(View v){
+    private void loadbackground(View v){
         updater.getViewContent(v);
         loadview(v,false);
     }
@@ -72,7 +72,7 @@ public class SquareMap {
             }
             else if(v.getUniversalelements().get(i) instanceof Background){
                 View tv=new View(v.getUniversalelements().get(i).getResource());
-                loadbackgroud(tv);
+                loadbackground(tv);
             }
             else if (v.getUniversalelements().get(i)instanceof ControllableElements){
                 if (reload&&!you){

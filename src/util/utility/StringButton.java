@@ -2,7 +2,10 @@ package util.utility;
 
 import util.Button;
 import util.Derivative;
+import util.Elements;
 import util.InfoPack;
+
+import java.awt.*;
 
 public class StringButton extends Button {
     String resourcename;
@@ -16,13 +19,22 @@ public class StringButton extends Button {
     }
 
     public StringButton(){
-        setResource("AAAAAAAAAAAAAA");
+        setResource("");
         setLength(550);
         setResourcetype("String");
+        Elements e=new Elements();
+        e.setResourcetype("Image");
+        e.setResource("white.png");
+        e.setSize(700);
+        e.setSmul(0);
+        e.setTplus(100);
+        e.setX(0);
+        e.setY(0);
+        setFocusedEffect(e);
     }
     @Override
     public Derivative click(InfoPack pack) {
-        setResource("");
+        //setResource("");
         return null;
     }
 
@@ -42,4 +54,6 @@ public class StringButton extends Button {
         }
         setResource(stringBuffer.toString());
     }
+
+
 }

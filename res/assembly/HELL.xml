@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GridLayout bz="100" xoffsetable="true" maxx="0" yoffsetable="true" maxy="0">
+  <SlimPanel x="5" y="5" size="1" />
+  <BackPic x="0" y="0" size="1" name="background.gif" />
+  <Grassblock x="0" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="0" y="7" size="1" />
+  <Grassblock x="1" y="7" size="1" />
+  <Grassblock x="2" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="3" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="1" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="0" y="9" size="1" />
+  <Grassblock x="1" y="9" size="1" />
+  <Grassblock x="2" y="9" size="1" />
+  <Grassblock x="3" y="9" size="1" />
+  <Grassblock x="4" y="9" size="1" inside="Grassblock" />
+  <Grassblock x="5" y="9" size="1" inside="Grassblock" />
+  <Grassblock x="6" y="9" size="1" inside="Grassblock" />
+  <Grassblock x="7" y="9" size="1" inside="Grassblock" />
+  <Grassblock x="8" y="9" size="1" />
+  <Grassblock x="4" y="8" size="1" />
+  <Grassblock x="5" y="8" size="1" />
+  <Grassblock x="7" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="8" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="6" y="8" size="1" />
+  <Grassblock x="9" y="7" size="1" />
+  <Grassblock x="9" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="10" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="11" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="12" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="13" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="14" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="15" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="15" y="7" size="1" inside="Grassblock" />
+  <Grassblock x="16" y="7" size="1" inside="Grassblock" />
+  <Grassblock x="17" y="7" size="1" />
+  <Grassblock x="14" y="7" size="1" inside="Grassblock" />
+  <Grassblock x="13" y="7" size="1" inside="Grassblock" />
+  <Grassblock x="12" y="7" size="1" inside="Grassblock" />
+  <Grassblock x="11" y="7" size="1" inside="Grassblock" />
+  <Grassblock x="10" y="7" size="1" />
+  <Grassblock x="16" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="17" y="8" size="1" />
+  <Grassblock x="9" y="9" size="1" />
+  <Grassblock x="10" y="9" size="1" />
+  <Grassblock x="11" y="9" size="1" />
+  <Grassblock x="12" y="9" size="1" />
+  <Grassblock x="13" y="9" size="1" />
+  <Grassblock x="14" y="9" size="1" />
+  <Grassblock x="15" y="9" size="1" />
+  <Grassblock x="16" y="9" size="1" />
+  <Grassblock x="17" y="9" size="1" />
+  <Grassblock x="18" y="7" size="1" inside="Grassblock" />
+  <Grassblock x="18" y="8" size="1" />
+  <Grassblock x="18" y="9" size="1" />
+  <Grassblock x="19" y="9" size="1" inside="Grassblock" />
+  <Grassblock x="20" y="9" size="1" inside="Grassblock" />
+  <Grassblock x="20" y="8" size="1" inside="Grassblock" />
+  <Grassblock x="19" y="8" size="1" />
+  <Grassblock x="21" y="8" size="1" />
+  <Grassblock x="21" y="9" size="1" />
+  <Grassblock x="22" y="9" size="1" />
+  <Brick x="11" y="4" size="1" />
+  <Brick x="6" y="1" size="1" />
+  <Brick x="7" y="1" size="1" />
+  <Brick x="8" y="1" size="1" />
+  <Brick x="9" y="1" size="1" />
+  <Brick x="10" y="1" size="1" />
+  <Brick x="11" y="1" size="1" />
+  <Goomba x="20" y="18" size="1" />
+  <Goomba x="-2" y="18" size="1" />
+  <Mushroom x="-9" y="10" size="1" inside="Mushroom" />
+  <Mushroom x="-2" y="6" size="1" />
+  <Mushroom x="27" y="10" size="1" />
+  <Mushroom x="-2" y="6" size="1" />
+  <Brick x="1" y="4" size="1" />
+  <Brick x="9" y="6" size="1" />
+  <Brick x="1" y="3" size="1" />
+  <Brick x="1" y="2" size="1" />
+  <Brick x="1" y="1" size="1" />
+  <Brick x="2" y="1" size="1" />
+  <Brick x="3" y="1" size="1" />
+  <Brick x="4" y="1" size="1" />
+  <Grassblock x="5" y="7" size="1" />
+  <Mario x="8" y="4" size="1" inside="Mario" />
+  <Grassblock x="4" y="7" size="1" />
+  <Grassblock x="3" y="7" size="1" />
+  <Brick x="1" y="6" size="1" />
+  <Brick x="1" y="5" size="1" />
+  <Grassblock x="2" y="7" size="1" />
+  <Brick x="14" y="3" size="1" />
+  <Brick x="14" y="2" size="1" inside="Brick" />
+  <Brick x="14" y="1" size="1" />
+  <Brick x="14" y="5" size="1" />
+  <Brick x="14" y="4" size="1" />
+  <Mushroom x="2" y="6" size="1" />
+  <Mushroom x="2" y="6" size="1" />
+  <Mushroom x="2" y="6" size="1" inside="Mushroom" />
+  <Goomba x="11" y="6" size="1" />
+  <Grassblock x="12" y="2" size="1" />
+  <Grassblock x="13" y="2" size="1" />
+  <Grassblock x="13" y="3" size="1" />
+  <Grassblock x="13" y="4" size="1" />
+  <Grassblock x="13" y="5" size="1" />
+  <Grassblock x="13" y="6" size="1" />
+  <Brick x="9" y="2" size="1" />
+  <Brick x="9" y="3" size="1" inside="Brick" />
+  <Brick x="6" y="4" size="1" inside="Mushroom" />
+  <Goomba x="5" y="3" size="1" inside="Goomba" />
+</GridLayout>

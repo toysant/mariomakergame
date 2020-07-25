@@ -18,7 +18,6 @@ public class Refresher extends Thread {
                 e.printStackTrace();
             }
         }
-
     }
     private void refresh(){
         panel.display();

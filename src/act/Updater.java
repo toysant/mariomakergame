@@ -1,18 +1,21 @@
 package act;
 import util.*;
 import res.XMLManager;
+import util.utility.BackPic;
 import util.utility.Group;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
 public class Updater extends Thread {
+    private boolean linked=true;
     private int prx,pry;
     private Menu focus=null;
-    private List<Elements> removeList=new ArrayList<Elements>();
     private List<Thread> threadList=new ArrayList<Thread>();
+    List<Menu> menuList=new ArrayList<Menu>();
     private Derivative temp=null;
     int g=1,index;
     private JFrame frame=null;
@@ -25,13 +28,15 @@ public class Updater extends Thread {
     List<Derivative> derivativeList=null;
     List<Anime> animeList=null;
     List<Elements> addlist=null;
-    List<Menu> menuList=new ArrayList<Menu>();
+    private List<Elements> removeList=null;
     ControllableElements you=null;
     private int xoffset=0;
     private int yoffset=0;
     private boolean xoffsetable=false,yoffsetable=false;
     private Configs conf=new Configs();
     private Mode mode=null;
+    BackPic backPic=null;
+    private long currentTimeMillis=0,deltatime=0;
     Updater(View view){
         this.view=view;
         xmlManager=new XMLManager();
@@ -43,7 +48,9 @@ public class Updater extends Thread {
         camera();
         loader(loadmap.getAll(xoffset,yoffset));
     }
-
+    public Configs getConf(){
+        return conf;
+    }
     public Mode getMode() {
         return mode;
     }
@@ -139,21 +146,13 @@ public class Updater extends Thread {
         }));
         threadList.forEach(Thread::start);
         while(true){
-//            long b=System.currentTimeMillis();
+            currentTimeMillis=System.currentTimeMillis();
             if (!mode.isPause()) {
                 index++;
                 anime();
                 if (mode.isAct()) {
-                    gravity();
-                    enemyList.forEach(enemy -> {
-                        enemy.go();
-                    });
-                    travDerivat();
-                    istouched();
+                    travel();
                     youmovement();
-                    if (you != null) {
-                        you.setX(you.getX() + you.getSre());
-                    }
                 }
                 if (mode.isCamera()) {
                     camera();
@@ -175,7 +174,7 @@ public class Updater extends Thread {
                     }
                 });
                 if (mode.isGamelogical()) {
-                    solver();
+                    post();
                 }
             }
             modeact();
@@ -195,8 +194,7 @@ public class Updater extends Thread {
                     }
                 }
             }
-
-//            System.out.println(System.currentTimeMillis()-b);
+            deltatime=System.currentTimeMillis()-currentTimeMillis;
             try {
                 Thread.sleep(mode.getDelaytime());
             } catch (InterruptedException e) {
@@ -217,10 +215,10 @@ public class Updater extends Thread {
         if (mode.isControl()){
             mode.setFocus(you);
         }
-        if (mode.save()){
-            xmlManager.build(view);
-            mode.setSave(false);
-        }
+//        if (mode.save()){
+//            xmlManager.build(view);
+//            mode.setSave(false);
+//        }
         addlist.addAll(mode.getAddlist());
         mode.getAddlist().clear();
         removeList.addAll(mode.getRemovelist());
@@ -264,7 +262,6 @@ public class Updater extends Thread {
             if (!(l.get(i)instanceof Group)){
             if (e.getX()/view.getMul()==l.get(i).getX()/view.getMul()&&e.getY()/view.getMul()==l.get(i).getY()/view.getMul()){
                     l.get(i).setInside(e.getClass().getSimpleName());
-                System.out.println(l.get(i).getInside());
                     addable=false;
             }
             else {
@@ -283,6 +280,7 @@ public class Updater extends Thread {
         this.mode=getModebs(name);
         mode.setXoffset(xoffset);
         mode.setYoffset(yoffset);
+
         menuList.clear();
     }
     private void adder(){
@@ -307,22 +305,6 @@ public class Updater extends Thread {
         });
     }
     private void dynamicloader(){
-            for (int i = enemyList.size() - 1; i >= 0; i--) {
-                if (loadmap.outofrange(enemyList.get(i))) {
-                    removeList.add(enemyList.get(i));
-                }
-            }
-
-            for (int i = derivativeList.size() - 1; i >= 0; i--) {
-                if (loadmap.outofrange(derivativeList.get(i))) {
-                    removeList.add(derivativeList.get(i));
-                }
-            }
-        if (you!=null) {
-                if (loadmap.outofrange(you)) {
-                    you.setDestroy(true);
-                }
-        }
         List<List<Elements>> ll=loadmap.getLists(xoffset,yoffset);
         if (ll!=null) {
             remover(ll.get(0));
@@ -335,52 +317,9 @@ public class Updater extends Thread {
         });
         removeList.clear();
     }
-    private void travDerivat(){
-        derivativeList.forEach(derivative -> {
-            if (!derivative.isHighspeed()) {
-                derivative.go();
-                if (!derivative.isLogical()) {
-                    int index = 0;
-                    for (int i = 0; i < blockList.size(); i++) {
-                        if (isIn(derivative, blockList.get(i))) {
-                            addlist.add(derivative.deal(blockList.get(i)));
-                            index++;
-                        }
-                    }
-                    if (index > 0) {
-                        derivative.setIsin(true);
-                    } else {
-                        derivative.setIsin(false);
-                    }
-                }
-                enemyList.forEach(enemy -> {
-                    if (isIn(derivative, enemy)) {
-                        addlist.add(derivative.deal(enemy));
-                    }
-                });
-                if (isIn(derivative, you)) {
-                    addlist.add(derivative.deal(you));
-                }
-            }
-            else {
-                derivative.go();
-                derivativeList.forEach(derivative1 -> {
-                    multtracing(derivative,blockList);
-                });
-                enemyList.forEach(enemy -> {
-                    if (isIn(derivative, enemy)) {
-                        addlist.add(derivative.deal(enemy));
-                    }
-                });
-                if (isIn(derivative, you)) {
-                    addlist.add(derivative.deal(you));
-                }
-            }
-        });
-    }
+
     private void youmovement(){
         if (you!=null) {
-            collisionbetween(you, enemyList);
             you.operate();
             you.method();
         }
@@ -407,6 +346,9 @@ public class Updater extends Thread {
         view.setYoffsetable(infoPack.isYoffsetable());
         view.setMaxx(infoPack.getMaxx());
         view.setMaxy(infoPack.getMaxy());
+        BackPic b=new BackPic();
+        b.setResource("background.gif");
+        view.add(b);
         viewload(view);
         you=null;
         loadmap=new SquareMap(view,conf,this);
@@ -415,10 +357,12 @@ public class Updater extends Thread {
     private void camera(){
         if (you!=null) {
             if (xoffsetable && view.getMaxx() != 0) {
+
                 if (you.getX() > xoffset + conf.getX() * 7 / 10 && xoffset + conf.getX() < view.getMaxx()) {
                     xoffset = you.getX() - conf.getX() * 7 / 10;
                     if (xoffset + conf.getX() > view.getMaxx()) {
                         xoffset = view.getMaxx() - conf.getX();
+
                     }
                 }
                 if (you.getX() < xoffset + conf.getX() * 3 / 10 && xoffset > 0) {
@@ -429,36 +373,20 @@ public class Updater extends Thread {
                 }
             }
             if (yoffsetable && view.getMaxy() != 0) {
-
-            }
-        }
-    }
-    private void gravity(){
-        if (you!=null){
-            if (you.isGram()){
-            you.setY(you.getY()+you.getDropvre());
-            you.gravity(g);
-            }
-        }
-        enemyList.forEach(enemy -> {
-            if (enemy.isLogical()) {
-                if (enemy.isGram()) {
-                    enemy.setY(enemy.getY() + enemy.getDropvre());
-                    enemy.gravity(g);
-
+                if (you.getY() > yoffset + conf.getY() * 6 / 10 && yoffset + conf.getY() < view.getMaxy()) {
+                    yoffset = you.getY() - conf.getY() * 6 / 10;
+                    if (yoffset + conf.getY() > view.getMaxy()) {
+                        yoffset = view.getMaxy() - conf.getY();
+                    }
+                }
+                if (you.getY() < yoffset + conf.getY() * 4 / 10 && yoffset > 0) {
+                    yoffset = you.getY() - conf.getY() * 4 / 10;
+                    if (yoffset < 0) {
+                        yoffset = 0;
+                    }
                 }
             }
-        });
-        derivativeList.forEach(derivative -> {
-            if (derivative.isLogical()){
-                derivative.setY(derivative.getY()+derivative.getDropvre());
-                derivative.gravity(g);
-            }
-        });
-//        for (int i=0;i<enemyList.size();i++){
-//            enemyList.get(i).setY(enemyList.get(i).getY() +enemyList.get(i).getDropvre());
-//            enemyList.get(i).gravity(g);
-//        }
+        }
     }
     private boolean isIn(Elements ejed,Elements toej){
         int toejsize,toejtall,ejedsize,ejedtall;
@@ -491,6 +419,7 @@ public class Updater extends Thread {
             if (x*(b1tall+b2tall)/(b1size+b2size)<=y){
                 if (b1tall+b2tall-x*(b1tall+b2tall)/(b1size+b2size)<=y){
                     B2.ispushedup(B1);
+
                     //b2down
                 }
                 if (b1tall+b2tall-x*(b1tall+b2tall)/(b1size+b2size)>y){
@@ -501,6 +430,7 @@ public class Updater extends Thread {
             if (x*(b1tall+b2tall)/(b1size+b2size)>y) {
                 if (b1tall + b2tall - x * (b1tall + b2tall) / (b1size + b2size) <= y) {
                     B2.istouchedright(B1);
+
                     //b2right
                 }
                 if (b1tall + b2tall - x * (b1tall + b2tall) / (b1size + b2size) > y) {
@@ -616,25 +546,127 @@ public class Updater extends Thread {
             this.blocknum=blocknum;
         }
     }
-    private void istouched(){
-        derivativeList.forEach(derivative -> {
-            if (derivative.isLogical()){
-                derivative.setSre(derivative.getS());
-                derivative.setDropvre(derivative.getDropv());
-                multtracing(derivative,blockList);
+    private void traditionalcollision(Elements e,List l){
+        for (int i=0;i<l.size();i++){
+            traditionaldetect(e,(Elements) l.get(i));
+        }
+    }
+    private void traditionaldetect(Elements B1,Elements B2){
+        int b1size,b1tall,b2size,b2tall,x,y;
+        b1size=B1.getSize()-1;
+        b1tall=B1.sizetotall()-1;
+        b2size=B2.getSize()-1;
+        b2tall=B2.sizetotall()-1;
+        x=B1.getX()-B2.getX()+b1size;
+        y=B1.getY()-B2.getY()+b1tall;
+        if (x>=0&&x<=b1size+b2size&&y>=0&&y<=b1tall+b2tall){
+            if (x*(b1tall+b2tall)/(b1size+b2size)<=y){
+                if (b1tall+b2tall-x*(b1tall+b2tall)/(b1size+b2size)<=y){
+                    B1.isstepped(B1.getX(),B2.getY()+b2tall);
+                    B2.ispushedup(B1);
+
+                    //b2down
+                }
+                if (b1tall+b2tall-x*(b1tall+b2tall)/(b1size+b2size)>y){
+                    B1.istouchedright(B2.getX()-b1size-1,B1.getY());
+                    B2.istouchedleft(B1);
+                    //b2left
+                }
             }
-        });
-        for(int i=0;i<enemyList.size();i++){
-            if (enemyList.get(i).isLogical()) {
-                enemyList.get(i).setSre(enemyList.get(i).getS());
-                enemyList.get(i).setDropvre(enemyList.get(i).getDropv());
-                multtracing(enemyList.get(i), blockList);
+            if (x*(b1tall+b2tall)/(b1size+b2size)>y) {
+                if (b1tall + b2tall - x * (b1tall + b2tall) / (b1size + b2size) <= y) {
+                    B1.istouchedleft(B2.getX()+b2size+1,B1.getY());
+                    B2.istouchedright(B1);
+
+                    //b2right
+                }
+                if (b1tall + b2tall - x * (b1tall + b2tall) / (b1size + b2size) > y) {
+                    B1.ispushedup(B1.getX(),B2.getY()-b1tall);
+                    B2.isstepped(B1);
+                    //b2up
+                }
             }
         }
+    }
+
+    private void derivativenormal(Derivative derivative){
+        if (!derivative.isLogical()) {
+            int index = 0;
+            for (int i = 0; i < blockList.size(); i++) {
+                if (isIn(derivative, blockList.get(i))) {
+                    addlist.add(derivative.deal(blockList.get(i)));
+                    index++;
+                }
+            }
+            if (index > 0) {
+                derivative.setIsin(true);
+            } else {
+                derivative.setIsin(false);
+            }
+        }
+        enemyList.forEach(enemy -> {
+            if (isIn(derivative, enemy)) {
+                addlist.add(derivative.deal(enemy));
+            }
+        });
+        if (isIn(derivative, you)) {
+            addlist.add(derivative.deal(you));
+        }
+    }
+    private void travel(){
+        derivativeList.forEach(derivative -> {
+            derivative.go();
+            derivative.setX(derivative.getX()+derivative.getSre());
+            derivative.setY(derivative.getY() + derivative.getDropvre());
+            if (derivative.isGram()) {
+                derivative.gravity(g);
+            }
+            derivativenormal(derivative);
+            if (derivative.isLogical()){
+                if (derivative.isHighspeed()) {
+                    derivative.setSre(derivative.getS());
+                    derivative.setDropvre(derivative.getDropv());
+                    derivativemulttracing(derivative, blockList);
+                }
+                else {
+                    traditionalcollision(derivative,blockList);
+                    derivative.setSre(derivative.getS());
+                    derivative.setDropvre(derivative.getDropv());
+                }
+            }
+            if (loadmap.outofrange(derivative)) {
+                removeList.add(derivative);
+            }
+        });
+        enemyList.forEach(enemy -> {
+            enemy.go();
+            enemy.setX(enemy.getX()+enemy.getSre());
+            enemy.setY(enemy.getY() + enemy.getDropvre());
+            if (enemy.isLogical()) {
+                if (enemy.isGram()) {
+                    enemy.gravity(g);
+                }
+                enemy.setSre(enemy.getS());
+                enemy.setDropvre(enemy.getDropv());
+                multtracing(enemy,blockList);
+            }
+            if (loadmap.outofrange(enemy)) {
+                removeList.add(enemy);
+            }
+        });
         if (you!=null) {
+            you.setX(you.getX() + you.getSre());
+            you.setY(you.getY()+you.getDropvre());
+            if (you.isGram()){
+                you.gravity(g);
+            }
             you.setDropvre(you.getDropv());
             you.setSre(you.getS());
             multtracing(you, blockList);
+            collisionbetween(you, enemyList);
+            if (loadmap.outofrange(you)) {
+                you.setDestroy(true);
+            }
         }
     }
     private void multtracing(Elements tohit,List hittedList){
@@ -646,6 +678,101 @@ public class Updater extends Thread {
                 break;
             }
         }
+    }
+    private void derivativemulttracing(Derivative tohit,List hittedList){
+        boolean breakout=false;
+        List<CrossPoint> crossPointsbuffer=null;
+        List<CrossPoint> crossPointList=null;
+        int edx=0,edy=0,stx=0,sty=0;
+        while (tohit.getSre()!=0||tohit.getDropvre()!=0){
+            if (crossPointsbuffer==null){
+                stx=tohit.getX();
+                sty=tohit.getY();
+            }
+            else {
+                stx=crossPointsbuffer.get(0).x;
+                sty=crossPointsbuffer.get(0).y;
+            }
+            crossPointsbuffer=raytracing(tohit,hittedList,crossPointsbuffer);
+            if (crossPointsbuffer==null){
+                edx=tohit.getX()+tohit.getSre();
+                edy=tohit.getY()+tohit.getDropvre();;
+                tohit.offset();
+                breakout=true;
+            }
+            else {
+                edx=crossPointsbuffer.get(0).x;
+                edy=crossPointsbuffer.get(0).y;
+            }
+            if (!tohit.isDestroy()) {
+                for (int i = 0; i < enemyList.size(); i++) {
+                    crossPointList = segment(stx, sty, edx, edy, tohit.getSize(), tohit.sizetotall(), i, enemyList.get(i), true);
+                    if (crossPointList.size() > 0) {
+                        addlist.add(tohit.deal(enemyList.get(i)));
+                    }
+                }
+                crossPointList = segment(stx, sty, edx, edy, tohit.getSize(), tohit.sizetotall(), 0, you, true);
+                if (crossPointList.size() > 0) {
+                    addlist.add(tohit.deal(you));
+                }
+                if (crossPointsbuffer!=null) {
+                    crossPointsbuffer.forEach(crossPoint -> {
+                        addlist.add(tohit.deal(blockList.get(crossPoint.blocknum)));
+                    });
+                }
+            }
+            if (breakout){
+                break;
+            }
+        }
+    }
+
+    private List<CrossPoint> segment(int nowX,int nowY,int nextX,int nextY,int tohitsize,int tohittall,int b,Elements hitted,boolean single){
+        int hittedsize=hitted.getSize()-1;
+        int hittedtall=hitted.sizetotall()-1;
+        List<CrossPoint> crossPointList=new ArrayList<CrossPoint>(4);
+        CrossPoint crossPoint=null;
+        crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getY()-tohittall,1,b);
+        if (crossPoint!=null){
+            if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.x,hitted.getX()-tohitsize,hitted.getX()+hittedsize))
+            {
+                crossPointList.add(crossPoint);
+                if (single){
+                    return crossPointList;
+                }
+            }
+        }
+        crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getX()+hittedsize,2,b);
+        if (crossPoint!=null){
+            if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.y,hitted.getY()-tohittall+1,hitted.getY()+hittedtall-1))
+            {
+                crossPointList.add(crossPoint);
+                if (single){
+                    return crossPointList;
+                }
+            }
+        }
+        crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getY()+hittedtall,3,b);
+        if (crossPoint!=null){
+            if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.x,hitted.getX()-tohitsize,hitted.getX()+hittedsize))
+            {
+                crossPointList.add(crossPoint);
+                if (single){
+                    return crossPointList;
+                }
+            }
+        }
+        crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getX()-tohitsize,4,b);
+        if (crossPoint!=null){
+            if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.y,hitted.getY()-tohittall+1,hitted.getY()+hittedtall-1))
+            {
+                crossPointList.add(crossPoint);
+                if (single){
+                    return crossPointList;
+                }
+            }
+        }
+        return crossPointList;
     }
     private List<CrossPoint> raytracing(Elements tohit,List hittedList,List<CrossPoint> crossPointsbuffer){
         int nextX=tohit.getX()+tohit.getSre();
@@ -668,34 +795,7 @@ public class Updater extends Thread {
 //            if (tocontinue){
 //                continue;
 //            }
-            Block hitted=(Block) hittedList.get(b);
-            int hittedsize=hitted.getSize()-1;
-            int hittedtall=hitted.sizetotall()-1;
-            CrossPoint crossPoint=null;
-            crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getY()-tohittall,1,b);
-            if (crossPoint!=null){
-                if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.x,hitted.getX()-tohitsize,hitted.getX()+hittedsize))
-                {
-                    crossPointList.add(crossPoint);
-                }}
-            crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getX()+hittedsize,2,b);
-            if (crossPoint!=null){
-                if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.y,hitted.getY()-tohittall+1,hitted.getY()+hittedtall-1))
-                {
-                    crossPointList.add(crossPoint);
-                } }
-            crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getY()+hittedtall,3,b);
-            if (crossPoint!=null){
-                if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.x,hitted.getX()-tohitsize,hitted.getX()+hittedsize))
-                {
-                    crossPointList.add(crossPoint);
-                }}
-            crossPoint=getPoint(nowX,nowY,nextX,nextY,hitted.getX()-tohitsize,4,b);
-            if (crossPoint!=null){
-                if (between(crossPoint.x,nowX,nextX)&&between(crossPoint.y,nowY,nextY)&&between(crossPoint.y,hitted.getY()-tohittall+1,hitted.getY()+hittedtall-1))
-                {
-                    crossPointList.add(crossPoint);
-                } }
+            crossPointList.addAll(segment(nowX,nowY,nextX,nextY,tohitsize,tohittall,b,(Elements) hittedList.get(b),false));
         }
         if (crossPointsbuffer!=null){
                 for (int a = crossPointList.size() - 1; a >= 0; a--) {
@@ -717,54 +817,56 @@ public class Updater extends Thread {
                     crossPointList.remove(a);
                 }
             }
-            for (int a=0;a<crossPointList.size();a++){
-                thenext=crossPointList.get(a);
-                if (thenext.line == 1||thenext.line == 3) {
-                    tohit.setSre(nextX-thenext.x);
-                }
-                if (thenext.line == 2||thenext.line == 4) {
-                    tohit.setDropvre(nextY-thenext.y);
-                }
-            }
-            for (int a=0;a<crossPointList.size();a++){
-                thenext=crossPointList.get(a);
-                Elements hitted=(Elements) hittedList.get(thenext.blocknum);
-                if (thenext.line == 1) {
-                    tohit.pushedupre(nextY-thenext.y);
-                    tohit.ispushedup(thenext.x,thenext.y);
-                    hitted.isstepped(tohit);
-                    tohit.cling(1,hitted);
-                    f1=true;
-                }
-                if (thenext.line == 3){
-                    tohit.steppedre(nextY-thenext.y);
-                    tohit.isstepped(thenext.x,thenext.y);
-                    hitted.ispushedup(tohit);
-                    tohit.cling(2,hitted);
-                    f3=true;
-                }
-                if (thenext.line == 2) {
-                    tohit.leftre(nextX-thenext.x);
-                    tohit.istouchedleft(thenext.x,thenext.y);
-                    hitted.istouchedright(tohit);
-                    tohit.cling(3,hitted);
-                    if (tohit.getSre()==0) {
-                        tohit.setOffset(1);
+
+                for (int a = 0; a < crossPointList.size(); a++) {
+                    thenext = crossPointList.get(a);
+                    if (thenext.line == 1 || thenext.line == 3) {
+                        tohit.setSre(nextX - thenext.x);
                     }
-                    f2=true;
-                }
-                if (thenext.line == 4) {
-                    tohit.rightre(nextX-thenext.x);
-                    tohit.istouchedright(thenext.x,thenext.y);
-                    hitted.istouchedleft(tohit);
-                    tohit.cling(4,hitted);
-                    if (tohit.getSre()==0) {
-                        tohit.setOffset(-1);
+                    if (thenext.line == 2 || thenext.line == 4) {
+                        tohit.setDropvre(nextY - thenext.y);
                     }
-                    f4=true;
                 }
-            }
-            tohit.stocked(f1,f2,f3,f4);
+                for (int a = 0; a < crossPointList.size(); a++) {
+                    thenext = crossPointList.get(a);
+                    Elements hitted = (Elements) hittedList.get(thenext.blocknum);
+                    if (thenext.line == 1) {
+                        tohit.pushedupre(nextY - thenext.y);
+                        tohit.ispushedup(thenext.x, thenext.y);
+                        hitted.isstepped(tohit);
+                        tohit.cling(1, hitted);
+                        f1 = true;
+                    }
+                    if (thenext.line == 3) {
+                        tohit.steppedre(nextY - thenext.y);
+                        tohit.isstepped(thenext.x, thenext.y);
+                        hitted.ispushedup(tohit);
+                        tohit.cling(2, hitted);
+                        f3 = true;
+                    }
+                    if (thenext.line == 2) {
+                        tohit.leftre(nextX - thenext.x);
+                        tohit.istouchedleft(thenext.x, thenext.y);
+                        hitted.istouchedright(tohit);
+                        tohit.cling(3, hitted);
+                        if (tohit.getSre() == 0) {
+                            tohit.setOffset(1);
+                        }
+                        f2 = true;
+                    }
+                    if (thenext.line == 4) {
+                        tohit.rightre(nextX - thenext.x);
+                        tohit.istouchedright(thenext.x, thenext.y);
+                        hitted.istouchedleft(tohit);
+                        tohit.cling(4, hitted);
+                        if (tohit.getSre() == 0) {
+                            tohit.setOffset(-1);
+                        }
+                        f4 = true;
+                    }
+                }
+                tohit.stocked(f1, f2, f3, f4);
+
             return crossPointList;
         }
         return null;
@@ -815,14 +917,27 @@ public class Updater extends Thread {
 //    }
     public void initlists(){
 //        gravityList=new ArrayList<Gravity>();
-        enemyList=new ArrayList<Enemy>();
-        buttonList=new ArrayList<Button>();
-        blockList=new ArrayList<Block>();
-        derivativeList=new ArrayList<Derivative>();
-        animeList=new ArrayList<Anime>();
-        addlist=new ArrayList<Elements>();
+        buttonList = new ArrayList<Button>();
+        if (!linked) {
+            enemyList = new ArrayList<Enemy>();
+            blockList = new ArrayList<Block>();
+            derivativeList = new ArrayList<Derivative>();
+            animeList = new ArrayList<Anime>();
+            addlist = new ArrayList<Elements>();
+            removeList=new ArrayList<Elements>();
+        }
+        else {
+            enemyList = new LinkedList<Enemy>();
+            blockList = new LinkedList<Block>();
+            derivativeList = new LinkedList<Derivative>();
+            animeList = new LinkedList<Anime>();
+            addlist = new LinkedList<Elements>();
+            removeList=new LinkedList<Elements>();
+        }
     }
+
     public void filtelements(Elements elements){
+
         if(elements instanceof Block){
             blockList.add((Block)elements);
         }
@@ -846,6 +961,12 @@ public class Updater extends Thread {
                 you = (ControllableElements) elements;
             }
         }
+        else if (elements instanceof BackPic){
+            backPic=(BackPic) elements;
+        }
+        else if (elements instanceof Anime){
+            animeList.add((Anime)elements);
+        }
 //        if(elements instanceof Gravity){
 //            gravityList.add((Gravity)elements);
 //        }
@@ -853,6 +974,7 @@ public class Updater extends Thread {
     private void viewload(View v){
         yoffsetable=view.isYoffsetable();
         xoffsetable=view.isXoffsetable();
+
         if (you!=null){
             you.setSize(you.getRealsize()*(view.getMul()/you.getMul()));
         }
@@ -860,6 +982,9 @@ public class Updater extends Thread {
             if (you==null&&v.getUniversalelements().get(i) instanceof ControllableElements){
                 you=(ControllableElements) v.getUniversalelements().get(i);
                 you.setMul(view.getMul());
+            }
+            else if (backPic==null&&v.getUniversalelements().get(i) instanceof BackPic){
+                backPic=(BackPic)v.getUniversalelements().get(i);
             }
         }
     }
@@ -890,19 +1015,34 @@ public class Updater extends Thread {
                             Elements elements = menuList.get(m).getContain().get(i);
                             if (x > elements.getX() + menuList.get(m).getX()-menuList.get(m).getXoffset() && y > elements.getY() + menuList.get(m).getY()-menuList.get(m).getYoffset() && x < elements.getX() + menuList.get(m).getX() -menuList.get(m).getXoffset()+ elements.getSize() && y < elements.getY()-menuList.get(m).getYoffset() + menuList.get(m).getY() + elements.sizetotall()) {
                                 if (elements instanceof Button) {
+                                    ((Button) elements).modeOP(mode);
                                     ((Button) elements).click(mode.getFocus());
                                     ((Button) elements).click(pack);
                                     filtelements(((Button) elements).click());
                                 }
+                                if (mode.getFocus()!=null){
+                                    mode.getFocus().unfocus();
+
+                                }
                                 mode.setFocus(elements);
+                                mode.getFocus().focus();
+
                             } else if (elements.getResourcetype().equals("String")) {
                                 if (x > elements.getX() + menuList.get(m).getX()-menuList.get(m).getXoffset() && y > elements.getY() + menuList.get(m).getY()-menuList.get(m).getYoffset() && x < elements.getX() + menuList.get(m).getX()-menuList.get(m).getXoffset() + ((Button) elements).getLength() && y < elements.getY() -menuList.get(m).getYoffset()+ menuList.get(m).getY() + elements.sizetotall()) {
                                     if (elements instanceof Button) {
+                                        ((Button) elements).modeOP(mode);
                                         ((Button) elements).click(mode.getFocus());
                                         ((Button) elements).click(pack);
                                         filtelements(((Button) elements).click());
                                     }
+
+                                    if (mode.getFocus()!=null){
+                                        mode.getFocus().unfocus();
+                                    }
                                     mode.setFocus(elements);
+                                    mode.getFocus().focus();
+
+
                                 }
                             }
                         }
@@ -913,17 +1053,31 @@ public class Updater extends Thread {
         if (!menuclicked){
             for (int i = 0; i < buttonList.size(); i++) {
                 if (x > buttonList.get(i).getX() - xoffset && y > buttonList.get(i).getY() - yoffset && x < buttonList.get(i).getX() - xoffset + buttonList.get(i).getSize() && y < buttonList.get(i).getY() - yoffset + buttonList.get(i).sizetotall()) {
+                    buttonList.get(i).modeOP(mode);
                     buttonList.get(i).click(pack);
+                    if (mode.getFocus()!=null)
+                        mode.getFocus().unfocus();
                     mode.setFocus(buttonList.get(i));
+                    mode.getFocus().focus();
                     filtelements(buttonList.get(i).click());
                 } else if (buttonList.get(i).getResourcetype().equals("String")) {
                     if (x > buttonList.get(i).getX() - xoffset && y > buttonList.get(i).getY() - yoffset && x < buttonList.get(i).getX() - xoffset + buttonList.get(i).getLength() && y < buttonList.get(i).getY() - yoffset + buttonList.get(i).sizetotall()) {
+                        buttonList.get(i).modeOP(mode);
                         buttonList.get(i).click(pack);
+                        if (mode.getFocus()!=null)
+                            mode.getFocus().unfocus();
                         mode.setFocus(buttonList.get(i));
+                        mode.getFocus().focus();
+
                         filtelements(buttonList.get(i).click());
                     }
                 }
             }
+        }
+        if (mode.save()){
+            xmlManager.build(view);
+            mode.setSave(false);
+            System.out.println("creatingfiles");
         }
         if (pack.isViewswitch()) {
             if (pack.getView() != null) {
@@ -968,34 +1122,34 @@ public class Updater extends Thread {
         Refresher.setFps(conf.getFps());
         //frame.validate();
     }
-    public void solver(){
-        if (you!=null) {
-            switch (you.gameover()){
+    private void modepost(Elements e){
+        if (e.isDestroy()){
+            addlist.add(e.destroyed());
+            removeList.add(e);
+            mode.deal(e);
+        }
+    }
+    public void post(){
+            switch (mode.scenelogic()){
                 case 0:gameover();break;
                 case 1:switchview(view.getFilename());break;
                 case 2:switchview(you.getViewto());break;
                 case 99:switchview(you.getViewto());switchmode(you.getModeto());break;
                 default:;
             }
-        }
-        for (int i=enemyList.size()-1;i>=0;i--){
-            if (enemyList.get(i).isDestroy()){
-                addlist.add(enemyList.get(i).destroyed());
-                removeList.add(enemyList.get(i));
+        enemyList.forEach(enemy -> {
+            modepost(enemy);
+        });
+            derivativeList.forEach(derivative -> {
+               modepost(derivative);
+            });
+        animeList.forEach(anime -> {
+            if (anime.isDestroy()){
+                removeList.add(anime);
             }
-        }
-        for (int i=derivativeList.size()-1;i>=0;i--){
-            if (derivativeList.get(i).isDestroy()){
-                addlist.add(derivativeList.get(i).destroyed());
-                removeList.add(derivativeList.get(i));
-            }
-        }
-        for (int i=animeList.size()-1;i>=0;i--){
-            if (animeList.get(i).isDestroy()){
-                removeList.add(animeList.get(i));
-            }
-        }
+        });
         blockList.forEach(block -> {
+            modepost(block);
             block.clearSurl();
             if (block.isInteractive()){
                 addlist.add(block.interact());
@@ -1012,6 +1166,7 @@ public class Updater extends Thread {
         addlist.clear();
         removeList.clear();
         menuList.clear();
+        backPic=null;
     }
     public void changeview(String name,int x,int y){
         clearLists();

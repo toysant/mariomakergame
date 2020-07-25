@@ -1,21 +1,33 @@
 package util;
 
 
+import java.awt.*;
+
 public class Elements{
     private String resourcetype;
     private String resource;
     private int size;
     private float smul=1;
     private int splus=0,tplus=0;
-    private int s=0,maxs=0,sre=0,dropv=0,maxv=9,dropvre=0;
+    private int s=0,maxs=0,sre=0,dropv=0,maxv=15,dropvre=0;
     private int x,y;
     private int imgx,imgy,imgxto,imgyto;
     private int offset=0;
     private boolean visible=true,gram=true;
     private boolean logical=true;
+    private boolean focusing=false;
     private String inside=null;
     private Elements insideob=null;
     private boolean destroy=false,interactive=false;
+    private Color color=null;
+
+    public boolean isFocusing() {
+        return focusing;
+    }
+
+    public void setFocusing(boolean focusing) {
+        this.focusing = focusing;
+    }
 
     public int getPaintx() {
         return x;
@@ -29,15 +41,20 @@ public class Elements{
     public void focusmethod(int code){
 
     }
-    public Elements focus(){
-        return null;
+    public void focus(){
+        setFocusing(true);
+
+    }
+    public void unfocus(){
+        System.out.println(this);
+        setFocusing(false);
     }
     public int getPaintsize() {
-        return size+splus;
+        return getSize();
     }
 
     public int getPainttall() {
-        return ((int)(getSize()*smul+tplus));
+        return sizetotall();
     }
 
 
@@ -270,6 +287,11 @@ public class Elements{
     public void steppedre(int sub){};
     public void pushedupre(int sub){};
     public void destroy(){
+        setS(0);
+        setDropv(0);
+        setDropvre(0);
+        setSre(0);
+        setDestroy(false);
         destroy=true;
     }
     public void in(Elements e){
@@ -306,4 +328,12 @@ public class Elements{
     //    public Elements(String type){
 //        this.type=type;
 //}
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

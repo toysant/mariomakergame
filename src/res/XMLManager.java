@@ -5,14 +5,14 @@ import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import util.utility.BackPic;
 import util.utility.Background;
 import util.utility.Group;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
 
 public class XMLManager {
@@ -38,6 +38,7 @@ public class XMLManager {
         Element es;
         for (int i=0;i<v.getUniversalelements().size();i++){
             Elements elements=v.getUniversalelements().get(i);
+
             if (elements instanceof Group){
                List<Elements> l=((Group)elements).getElementsList();
                 for (int x=0;x<l.size();x++){
@@ -51,6 +52,19 @@ public class XMLManager {
                     root.addContent(es);
                 }
             }
+            else if (elements instanceof BackPic){
+
+                es = new Element(elements.getClass().getSimpleName());
+                es.setAttribute("x",""+elements.getX()/v.getMul());
+                es.setAttribute("y",""+elements.getY()/v.getMul());
+                es.setAttribute("size",""+1);
+                es.setAttribute("name",elements.getResource());
+                if (elements.getInside()!=null){
+                    es.setAttribute("inside",elements.getInside());
+                }
+                root.addContent(es);
+            }
+
             else {
                 es = new Element(elements.getClass().getSimpleName());
                 es.setAttribute("x",""+elements.getX()/v.getMul());
@@ -63,8 +77,9 @@ public class XMLManager {
             }
         }
         Document doc=new Document(root);
-        Format format=Format.getCompactFormat();
+        Format format=Format.getPrettyFormat();
         format.setEncoding("UTF-8");
+
         XMLOutputter outter=new XMLOutputter(format);
         try {
             outter.output(doc,new FileOutputStream(v.getFilename()));
@@ -100,7 +115,7 @@ public class XMLManager {
             if (root.getAttribute("yoffsetable")!=null){
                 view.setYoffsetable(root.getAttribute("yoffsetable").getBooleanValue());
                 if (root.getAttribute("maxy")!=null&&view.isYoffsetable()){
-                    view.setMaxx(root.getAttribute("maxy").getIntValue());
+                    view.setMaxy(root.getAttribute("maxy").getIntValue());
                 }
             }
             Elements elements=null;
@@ -111,6 +126,9 @@ public class XMLManager {
                     elements= (Elements) Class.forName("util.utility."+list.get(i).getName()).newInstance();
                     if (elements instanceof Background){
                         elements.setResource(list.get(i).getAttribute("res").getValue());
+                    }
+                    if (elements instanceof BackPic){
+                        elements.setResource(list.get(i).getAttribute("name").getValue());
                     }
                     if (elements instanceof Group){
                         String inside=null;
@@ -124,6 +142,7 @@ public class XMLManager {
                         }
                         for (int y=fy;y<=ty;y++){
                             for (int x=fx;x<=tx;x++){
+
                                 sube=(Elements)Class.forName("util.utility."+list.get(i).getAttribute("type").getValue()).newInstance();
                                 sube.setX(x*mul);
                                 sube.setY(y*mul);
