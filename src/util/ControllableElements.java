@@ -110,6 +110,7 @@ public abstract class ControllableElements extends Elements{
     public Derivative up(boolean status){ setUp(status);return null;}
     public Derivative down(boolean status){ setDown(status);return null;}
     public Derivative ctrl(boolean status){setCtrl(status);return null;}
+    public Derivative definedKey(int code,boolean status){return null;}
     public void operate(){
 
     }
@@ -158,7 +159,7 @@ public abstract class ControllableElements extends Elements{
 
     @Override
     public void isstepped(int x,int y) {
-        setY(y);
+        setY(y+1);
         setX(x);
         if (getDropv()<0){
             setDropv(0);

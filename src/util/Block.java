@@ -44,11 +44,13 @@ public abstract class Block extends Elements {
 
     @Override
     public void ispushedup(Elements e) {
+
         if (e instanceof ControllableElements){
             surL.forEach(elements -> {
                 elements.chained();
             });
             setInteractive(true);
+
         }
     }
 
@@ -65,28 +67,33 @@ public abstract class Block extends Elements {
 
     @Override
     public Elements interact() {
+        setInteractive(false);
         if (getInside()!=null) {
             Elements e = null;
-            try {
-                e = (Elements) Class.forName("util.utility." + getInside()).newInstance();
-                setInside(null);
-                e.setY(getY() - sizetotall()-1);
-                e.setX(getX());
-                e.setSize(getSize());
-                e.setLogical(false);
-                e.setVisible(false);
-                if (e instanceof Derivative){
-                    ((Derivative)e).setPlay(true);
+            if (!getInside().equals(this.getClass().getSimpleName())) {
+                try {
+                    e = (Elements) Class.forName("util.utility." + getInside()).newInstance();
+                    e.setY(getY() - sizetotall() - 1);
+                    e.setX(getX());
+                    e.setSize(getSize());
+                    e.setLogical(false);
+                    e.setVisible(false);
+                    if (e instanceof Derivative) {
+                        ((Derivative) e).setPlay(true);
+                    }
+                } catch (InstantiationException e1) {
+                    e1.printStackTrace();
+                } catch (IllegalAccessException e1) {
+                    e1.printStackTrace();
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (InstantiationException e1) {
-                e1.printStackTrace();
-            } catch (IllegalAccessException e1) {
-                e1.printStackTrace();
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
             }
+            setInside(null);
             return e;
         }
         return null;
+
     }
+
 }

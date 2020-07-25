@@ -6,14 +6,21 @@ import util.Elements;
 
 public class Mario extends ControllableElements {
     int ui=50;
+    boolean faceto=true;
     private static int life=3;
     private boolean onground=false;
     private boolean squat=false,unstoppable=false;
     private Derivative d=null;
     private int setmaxs=7;
+    private int jump=0,jumprange=16;
     int index=0,i=0,b=6,opi;
-    int[] mark={3,34,65,96,155,1,32,63,94,155,186};
+    static int[] mark={3,34,65,96,155,1,32,63,94,155,186};
     boolean adult=false;
+
+    public boolean isAdult() {
+        return adult;
+    }
+
     public Mario(){
         setResource("mario.png");
         setImgx(3);
@@ -103,8 +110,9 @@ public class Mario extends ControllableElements {
             setImgy(56);
             setImgyto(90);
             if (getS() < 0) {
+
                 if (isOnground()) {
-                    if (index % (30 / getS()) == 0) {
+                    if (index % (30 / getS()) == 0||faceto==true) {
                         setImgx(mark[i % 3 + 6] + 16);
                         setImgxto(mark[i % 3 + 6]);
                         i++;
@@ -113,10 +121,12 @@ public class Mario extends ControllableElements {
                     setImgxto(mark[9]);
                     setImgx(mark[9] + 16);
                 }
+                faceto=false;
             }
             if (getS() > 0) {
+
                 if (isOnground()) {
-                    if (index % (30 / getS()) == 0) {
+                    if (index % (30 / getS()) == 0||faceto==false) {
                         setImgx(mark[i % 3 + 6]);
                         setImgxto(mark[i % 3 + 6] + 16);
                         i++;
@@ -125,6 +135,7 @@ public class Mario extends ControllableElements {
                     setImgxto(mark[9] + 16);
                     setImgx(mark[9]);
                 }
+                faceto=true;
             }
             if (getS() == 0) {
                 if (isOnground()) {
@@ -170,6 +181,7 @@ public class Mario extends ControllableElements {
     }
     public Derivative toadult(){
         if (!adult) {
+            jump=0;
             setSmul(7 / 4f);
             setImgy(56);
             setImgyto(90);
@@ -195,30 +207,39 @@ public class Mario extends ControllableElements {
 
     private void child(){
         if (getS()<0){
+
             if (isOnground()) {
-                if (index % (30 / getS()) == 0) {
+                if (index % (30 / getS()) == 0||faceto==true) {
                     setImgx(mark[i % 3 + 1] + 14);
                     setImgxto(mark[i % 3 + 1]);
                     i++;
+
                 }
+                jump=0;
             }
             else {
                 setImgxto(mark[4]);
                 setImgx(mark[4]+17);
+               jump=jumprange;
             }
+            faceto=false;
         }
         if (getS()>0){
+
             if (isOnground()) {
-                if (index % (30 / getS()) == 0) {
+                if (index % (30 / getS()) == 0||faceto==false) {
                     setImgx(mark[i % 3 + 1]);
                     setImgxto(mark[i % 3 + 1] + 14);
                     i++;
+                    jump=0;
                 }
             }
             else {
                 setImgxto(mark[4]+17);
                 setImgx(mark[4]);
+                jump=jumprange;
             }
+            faceto=true;
         }
         if (getS()==0){
             if (isOnground()) {
@@ -229,6 +250,7 @@ public class Mario extends ControllableElements {
                     setImgx(17);
                     setImgxto(3);
                 }
+                jump=0;
             }
             else {
                 if (belong(getImgx())) {
@@ -238,6 +260,7 @@ public class Mario extends ControllableElements {
                     setImgxto(mark[4]);
                     setImgx(mark[4]+17);
                 }
+                jump=jumprange;
             }
         }
     }
@@ -286,7 +309,7 @@ public class Mario extends ControllableElements {
         }
         if (isUp()){
             if (isOnground()||b>0) {
-                setDropv(-20);
+                setDropv(-25);
                 setOnground(false);
                 b--;
             }
@@ -336,5 +359,30 @@ public class Mario extends ControllableElements {
         super.ispushedup(x, y);
         setOnground(true);
         b=6;
+    }
+
+    @Override
+    public int getPaintsize() {
+        return getSize()+jump;
+    }
+
+    @Override
+    public int getPaintx() {
+        return (int) (getX()-jump/2);
+    }
+
+    @Override
+    public void isstepped(int x, int y) {
+        super.isstepped(x, y);
+        b=0;
+    }
+
+    @Override
+    public Derivative definedKey(int code, boolean status) {
+       if (code==90&&status&&isAdult()){
+
+           return new Tamaco(getX()+getPaintsize()/2,getY()+getPainttall()/2,faceto);
+       }
+        return null;
     }
 }

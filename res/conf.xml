@@ -4,4 +4,6 @@
     <title>haha</title>
     <numinfo fps="160" resx="1800" resy="1000" size="300"/>
     <Mode name="StartMode"/>
+    <!--<numinfo fps="160" resx="700" resy="400" size="100"/>-->
+    <!--<Mode name="GameMode"/>-->
 </configs>

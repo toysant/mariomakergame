@@ -9,7 +9,7 @@ public class EditModeButton extends Button {
     public EditModeButton(){
         super.setResource("editmode");
         super.setResourcetype("String");
-        setLength(150);
+        setLength(250);
     }
     @Override
     public Derivative click(InfoPack pack) {

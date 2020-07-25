@@ -69,7 +69,9 @@ public abstract class Mode {
     public List<Elements> getAddview() {
         return addview;
     }
-
+    public int scenelogic(){
+        return 9;
+    }
     public void setAddview(List<Elements> addview) {
         this.addview = addview;
     }
@@ -183,6 +185,7 @@ public abstract class Mode {
     }
 
     public void setFocus(Elements focus) {
+
         this.focus = focus;
     }
 
@@ -232,5 +235,7 @@ public abstract class Mode {
     public abstract void dragged(int b,int x,int y);
     public abstract void moved(int b,int x,int y);
     public abstract void switcher(int code,boolean status);
+    public void deal(Elements e){
 
+    }
 }

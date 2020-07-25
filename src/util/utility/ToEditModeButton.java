@@ -8,7 +8,7 @@ public class ToEditModeButton extends Button {
     public ToEditModeButton(){
         setResource("toEditMode");
         setResourcetype("String");
-        setLength(150);
+        setLength(350);
     }
 
     @Override

@@ -8,7 +8,7 @@ public class ExitButton extends Button {
     public ExitButton(){
         super.setResource("exit");
         super.setResourcetype("String");
-        setLength(100);
+        setLength(120);
     }
 
 

@@ -56,10 +56,7 @@ public class EditMode extends Mode {
                     menu.getContain().forEach(elements -> {
                         if (elements.getX()+menu.getX()-menu.getXoffset() < x && elements.getY()+menu.getY()-menu.getYoffset() < y && elements.getSize() + elements.getX()+menu.getX()-menu.getXoffset() > x && elements.sizetotall() + elements.getY()-menu.getYoffset() +menu.getY()> y) {
                             try {
-                                setFocus((Elements) Class.forName("util.utility." + elements.getClass().getSimpleName()).newInstance());
-                                if (elements instanceof Button){
-                                    ((Button)elements).modeOP(this);
-                                }
+                                    setFocus((Elements) Class.forName("util.utility." + elements.getClass().getSimpleName()).newInstance());
                             } catch (InstantiationException e) {
                                 e.printStackTrace();
                             } catch (IllegalAccessException e) {
@@ -190,7 +187,7 @@ public class EditMode extends Mode {
                 }
             }
             if (!ct) {
-                Menu menu = new EditModePauseMenu(700, 400);
+                Menu menu = new EditModePauseMenu(600, 300);
                 getAddlist().add(menu);
                 menuList.add(menu);
             }

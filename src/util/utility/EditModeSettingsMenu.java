@@ -10,7 +10,7 @@ public class EditModeSettingsMenu extends Menu {
         setSmul(0.8f);
         Elements e;
         e=new Elements();
-        e.setResource("Abstract1.jpg");
+        e.setResource("windows.png");
         e.setResourcetype("Image");
         e.setSize(1000);
         e.setSmul(0.8f);
@@ -56,15 +56,15 @@ public class EditModeSettingsMenu extends Menu {
         getContain().add(e);
         e=new EditModeSettingsMenuConfirmButton();
         e.setX(200);
-        e.setY(600);
+        e.setY(650);
         e.setSize(100);
         for (int i=0;i<getContain().size();i++){
             ((EditModeSettingsMenuConfirmButton) e).addLinked(getContain().get(i));
         }
         getContain().add(e);
         e=new CancelButton(this);
-        e.setX(500);
-        e.setY(600);
+        e.setX(550);
+        e.setY(650);
         e.setSize(100);
         getContain().add(e);
     }
